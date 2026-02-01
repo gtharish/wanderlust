@@ -1,0 +1,89 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container my-4">
+
+    <!-- Listing Title -->
+    <h2 class="mb-3"><%= listing.title %></h2>
+
+    <div class="row">
+
+        <!-- LEFT SIDE: IMAGE -->
+        <div class="col-md-6">
+            <img src="<%= listing.image %>" 
+                 class="img-fluid rounded shadow-sm" 
+                 alt="Listing Image">
+        </div>
+
+        <!-- RIGHT SIDE: DETAILS -->
+        <div class="col-md-6">
+
+            <!-- Price -->
+            <h4 class="text-success">₹ <%= listing.price %> / night</h4>
+
+            <!-- Description -->
+            <p class="mt-3 text-muted">
+                <%= listing.description %>
+            </p>
+
+            <!-- Location -->
+            <p class="mt-2">
+                <strong>Location:</strong> <%= listing.location %>
+            </p>
+
+            <!-- Buttons -->
+            <div class="mt-4 d-flex gap-3">
+
+                <!-- EDIT -->
+                <a href="/listings/<%= listing.id %>/edit" 
+                   class="btn btn-primary">
+                    Edit
+                </a>
+
+                <!-- DELETE -->
+                <form method="POST"
+                      action="/listings/<%= listing.id %>?_method=DELETE">
+                    <button class="btn btn-danger">
+                        Delete
+                    </button>
+                </form>
+
+                <!-- BACK -->
+                <a href="/listings" class="btn btn-secondary">
+                    Back
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+<hr>
+
+<h3>Add a Review</h3>
+
+<form action="/listings/<%= listing.id %>/reviews" method="POST" class="mt-3">
+
+    <!-- Rating -->
+    <label for="rating" class="form-label"><strong>Rating:</strong></label>
+    <select name="rating" id="rating" class="form-select w-50 mb-3" required>
+        <option value="">Select rating</option>
+        <option value="5">★★★★★ (5)</option>
+        <option value="4">★★★★☆ (4)</option>
+        <option value="3">★★★☆☆ (3)</option>
+        <option value="2">★★☆☆☆ (2)</option>
+        <option value="1">★☆☆☆☆ (1)</option>
+    </select>
+
+    <!-- Comment -->
+    <label for="content" class="form-label"><strong>Comment:</strong></label>
+    <textarea name="content"
+              id="content"
+              class="form-control mb-3"
+              rows="3"
+              placeholder="Write your review..."
+              required>
+    </textarea>
+
+    <button class="btn btn-success">Submit Review</button>
+</form>
+
+

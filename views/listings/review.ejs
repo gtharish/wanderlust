@@ -1,0 +1,29 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container my-4">
+
+    <h2>Add Review for <%= listing.title %></h2>
+
+    <form action="/listings/<%= listing._id %>/reviews" method="POST" class="mt-4">
+
+        <!-- Rating -->
+        <label class="form-label"><strong>Rating:</strong></label>
+        <select name="rating" class="form-select w-50 mb-3" required>
+            <option value="">Select rating</option>
+            <option value="5">★★★★★ (5)</option>
+            <option value="4">★★★★☆ (4)</option>
+            <option value="3">★★★☆☆ (3)</option>
+            <option value="2">★★☆☆☆ (2)</option>
+            <option value="1">★☆☆☆☆ (1)</option>
+        </select>
+
+        <!-- Comment -->
+        <label class="form-label"><strong>Comment:</strong></label>
+        <textarea name="comment" class="form-control mb-3" rows="4" required></textarea>
+
+        <button class="btn btn-success">Submit Review</button>
+        <a href="/listings/<%= listing._id %>" class="btn btn-secondary ms-2">Cancel</a>
+
+    </form>
+
+</div>

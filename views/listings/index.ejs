@@ -1,0 +1,35 @@
+<% layout("/layouts/boilerplate") %>
+<% block('head').append(' <link rel="stylesheet" href="/css/main.css">')%><%= success %>
+<h3>All listings</h3>
+<div class="grid-container" >
+    <% for (let item of samplelistings) { %>
+        <div class="card p-2 shadow-sm" 
+        onclick="window.location.href='/listings/<%= item.id %>/show'"
+        style="cursor:pointer;">
+
+            <img src="<%= item.image %>" alt="Listing Image" class="card-img-top">
+
+            <div class="card-body">
+                <h5 class="card-title"><%= item.title %></h5>
+                <p class="card-price text-muted">₹ <%= item.price %> / night</p>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <!-- EDIT BUTTON -->
+                    <a href="/listings/<%= item.id %>/edit" 
+                        class="btn btn-sm btn-primary"
+                        onclick="event.stopPropagation()">
+                        Edit
+                    </a>
+
+                    <!-- DELETE BUTTON -->
+                    <form method="POST" action="/listings/<%= item.id %>?_method=DELETE"
+                         onclick="event.stopPropagation()">
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    <% } %>
+</div>
+

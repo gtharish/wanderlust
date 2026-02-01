@@ -1,0 +1,58 @@
+<% layout("/layouts/boilerplate") %>
+
+
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3>Edit Listing</h3>
+                </div>
+
+                <div class="card-body">
+                    
+                    <p class="text-muted">
+                        <strong>Listing ID:</strong> <%= items.id %>
+                    </p>
+
+                    <form method="POST" action="/listings/<%= items.id %>?_method=PUT">
+
+                        <div class="mb-3">
+                            <label class="form-label">Title</label>
+                            <input name="items[title]" value="<%= items.title %>" type="text" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="items[description]" class="form-control" rows="4"><%= items.description %></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Price</label>
+                            <input name="items[price]" value="<%= items.price %>" type="number" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Country</label>
+                            <input name="items[country]" value="<%= items.country %>" type="text" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Location</label>
+                            <input name="items[location]" value="<%= items.location %>" type="text" class="form-control">
+                        </div>
+
+                        <button class="btn btn-primary w-100 py-2 mt-3">
+                            Save Changes
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
