@@ -8,7 +8,7 @@ module.exports.isLoggedIn = (req,res,next)=>{
 };
 module.exports.redirectUrl = (req,res,next)=>{
  if(req.session.redirectUrl){
-    req.local.redirectUrl = req.session.redirectUrl;
+    res.locals.redirectUrl = req.session.redirectUrl;
 
  }
  next();
