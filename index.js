@@ -23,6 +23,9 @@ const {redirectUrl} = require("./middleware.js");
 const port = process.env.PORT || 8080;
  console.log(MongoStore);
 async function main() {
+  console.log("MONGO_URI exists:", !!process.env.MONGO_URI);
+
+
   await mongoose.connect(process.env.MONGO_URI);
  
 }
