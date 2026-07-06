@@ -19,6 +19,7 @@ const LocalStrategy = require("passport-local");
 const wrapAsync = require("./utils/wrapAsync.js");
 const expressError = require("./utils/expressError.js");
 const {isLoggedIn} = require("./middleware.js");
+const {isOwner} = require("./middleware.js");
 const {redirectUrl} = require("./middleware.js");
 const port = process.env.PORT || 8080;
  console.log(MongoStore);
@@ -107,7 +108,7 @@ app.post(
 );
 
 // Edit listing
-app.get("/listings/:id/edit",isLoggedIn, async (req, res) => {
+app.get("/listings/:id/edit",isLoggedIn,isOwner, async (req, res) => {
   const { id } = req.params;
   const items = await Listing.findById(id);
   res.render("listings/edit", { items });
@@ -121,7 +122,7 @@ app.put("/listings/:id",isLoggedIn, async (req, res) => {
 });
 
 // Delete listing
-app.delete("/listings/:id",isLoggedIn, async (req, res) => {
+app.delete("/listings/:id",isLoggedIn,isOwner, async (req, res) => {
   const { id } = req.params;
   await Listing.findByIdAndDelete(id);
   res.redirect("/listings");

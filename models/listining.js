@@ -23,10 +23,10 @@ let Listingschema = new Schema({
     type:Schema.Types.ObjectId,
     ref:"Review"
   }],
-  owner:[{
+  owner:{
      type:Schema.Types.ObjectId,
      ref:"User",
-  }],
+  },
 });
 
 const Listing = mongoose.model("Listing", Listingschema);

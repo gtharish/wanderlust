@@ -3,7 +3,13 @@
 <div class="container my-4">
 
     <!-- Listing Title -->
-    <h2 class="mb-3"><%= listing.title %></h2>
+    <h3>
+    <%= listing.title %>
+
+    <% if (currUser && listing.owner && listing.owner._id.equals(currUser._id)) { %>
+        <span class="badge bg-success ms-2">Owner</span>
+    <% } %>
+</h3>
 
     <div class="row">
 
