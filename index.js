@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
-
+require("dotenv").config();
 const Listing = require("./models/listining.js");
 const Review = require("./models/review.js");
 const User = require("./models/user.js");
@@ -19,23 +19,18 @@ const wrapAsync = require("./utils/wrapAsync.js");
 const expressError = require("./utils/expressError.js");
 const {isLoggedIn} = require("./middleware.js");
 const {redirectUrl} = require("./middleware.js");
-const port = 8080;
+const port = process.env.PORT || 8080;
 
-//
-// ─── DATABASE CONNECTION ─────────────────────────────────────────────────────
-//
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/wanderlust");
+  await mongoose.connect(process.env.MONGO_URI);
 }
 main()
   .then(() => console.log("Database connected successfully"))
   .catch((err) => console.log(err));
 
-//
-// ─── SESSION CONFIG ───────────────────────────────────────────────────────────
-//
+
 const sessionConfig = {
-  secret: "mysupersecretcode",
+  secret: process.env.SESSION_SECRET||"mysupersecretcode",
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -45,16 +40,10 @@ const sessionConfig = {
   },
 };
 
-//
-// ─── VIEW ENGINE SETUP ───────────────────────────────────────────────────────
-//
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-//
-// ─── MIDDLEWARE ─────────────────────────────────────────────────────────────
-//
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
@@ -69,7 +58,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Flash message global middleware
+
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
@@ -77,17 +66,20 @@ app.use((req, res, next) => {
   next();
 });
 
-//
 
 
+// Root route
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
 
-// Show all listings
+
 app.get("/listings", async (req, res) => {
   const samplelistings = await Listing.find();
   res.render("listings/index.ejs", { samplelistings });
 });
 
-// Add form
+
 app.get("/listings/add", isLoggedIn,(req, res) => {
   res.render("listings/add");
 });
@@ -96,7 +88,7 @@ app.get("/listings/add", isLoggedIn,(req, res) => {
 app.post(
   "/listings",isLoggedIn,
   wrapAsync(async (req, res) => {
-    const newlisting = new Listing(req.boy.items);
+    const newlisting = new Listing(req.body.items);
     newlisting.owner = req.user._id;
     await newlisting.save();
     // await Listing.create(req.body.items);
@@ -159,22 +151,26 @@ app.post(
 app.get("/signup",(req,res)=>{
     res.render("listings/signup");
 })
-
-app.post("/signup",async(req,res)=>{
+app.post("/signup",async(req,res,next)=>{
 
  let{username,email,password} = req.body;
- 
- const newUser = new User({username,email});
- const registeredUser = await User.register(newUser,password);
- res.login(registeredUser,(req,res,next)=>{
-  if(err){
-    next(err);
-  }
-  else{
- req.flash("success","hello");
- res.redirect("/listings");
-  }
- })
+
+ try{
+   const newUser = new User({username,email});
+   const registeredUser = await User.register(newUser,password);
+   req.login(registeredUser,(err)=>{
+    if(err){
+      next(err);
+    }
+    else{
+   req.flash("success","hello");
+   res.redirect("/listings");
+    }
+   })
+ }catch(e){
+   req.flash("error", e.message);
+   res.redirect("/login");
+ }
 
 });
 
@@ -203,16 +199,12 @@ app.post("/login",redirectUrl,passport.authenticate("local",
       }
      })
   })
-//
-// ─── 404 ERROR HANDLER ───────────────────────────────────────────────────────
-//
+
 app.use((req, res, next) => {
   next(new expressError(404, "Page not found!"));
 });
 
-//
-// ─── GENERIC ERROR HANDLER ───────────────────────────────────────────────────
-//
+
 app.use((err, req, res, next) => {
   const status = err.statusCode || 500;
   res.status(status).send(err.message);
