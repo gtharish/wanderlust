@@ -7,6 +7,7 @@ const Review = require("./models/review.js");
 const User = require("./models/user.js");
 
 const session = require("express-session");
+const {MongoStore} = require("connect-mongo");
 const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const path = require("path");
@@ -20,9 +21,10 @@ const expressError = require("./utils/expressError.js");
 const {isLoggedIn} = require("./middleware.js");
 const {redirectUrl} = require("./middleware.js");
 const port = process.env.PORT || 8080;
-
+ console.log(MongoStore);
 async function main() {
   await mongoose.connect(process.env.MONGO_URI);
+ 
 }
 main()
   .then(() => console.log("Database connected successfully"))
@@ -30,7 +32,11 @@ main()
 
 
 const sessionConfig = {
-  secret: process.env.SESSION_SECRET||"mysupersecretcode",
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    touchAfter: 24 * 3600,
+  }),
+  secret: process.env.SESSION_SECRET || "mysupersecretcode",
   resave: false,
   saveUninitialized: true,
   cookie: {
